@@ -136,6 +136,38 @@ button {
   }
 }
 
+.payment {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.payment label {
+  font-weight: bold;
+}
+
+.payment input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  width: 100%;
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+  .payment {
+    grid-template-columns: 1fr;
+  }
+
+  .payment input {
+    font-size: 18px;
+    padding: 14px;
+  }
+}
+
 /* 📱 TABLET */
 @media (min-width: 601px) and (max-width: 900px) {
   .container {
@@ -154,3 +186,4 @@ button {
     font-size: 16px;
   }
 }
+

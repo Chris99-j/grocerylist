@@ -27,7 +27,13 @@
     Grand Total: ₱<span id="grandTotal">0.00</span>
   </div>
 </div>
+<div class="payment">
+  <label for="amountGiven">Amount Given to Cashier:</label>
+  <input type="number" id="amountGiven" placeholder="Enter amount" oninput="calculateChange()">
 
+  <label for="change">Change you will receive:</label>
+  <input type="text" id="change" placeholder="0.00" readonly>
+</div>
 <script src="script.js"></script>
 </body>
 </html>

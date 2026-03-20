@@ -105,3 +105,10 @@ window.onload = function () {
   }
 };
 
+function calculateChange() {
+  const grandTotal = parseFloat(document.getElementById("grandTotal").innerText) || 0;
+  const amountGiven = parseFloat(document.getElementById("amountGiven").value) || 0;
+
+  const change = amountGiven - grandTotal;
+  document.getElementById("change").value = change >= 0 ? change.toFixed(2) : "0.00";
+}
