@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grocery Calculator</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -26,14 +27,19 @@
   <div class="total">
     Grand Total: ₱<span id="grandTotal">0.00</span>
   </div>
-</div>
-<div class="payment">
-  <label for="amountGiven">Amount Given to Cashier:</label>
-  <input type="number" id="amountGiven" placeholder="Enter amount" oninput="calculateChange()">
 
-  <label for="change">Change you will receive:</label>
-  <input type="text" id="change" placeholder="0.00" readonly>
+  <!-- Payment Section inside container -->
+  <div class="payment">
+    <label for="amountGiven">Amount Given to Cashier:</label>
+    <input type="number" id="amountGiven" placeholder="Enter amount" oninput="calculateChange()">
+
+    <label for="change">Change You Will Receive:</label>
+    <input type="text" id="change" placeholder="0.00" readonly>
+
+    <p id="paymentMessage"></p>
+  </div>
 </div>
+
 <script src="script.js"></script>
 </body>
 </html>
