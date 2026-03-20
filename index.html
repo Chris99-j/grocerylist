@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Grocery Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <h2>🛒 Grocery Calculator</h2>
+
+  <!-- Header -->
+  <div class="item header">
+    <strong>Item</strong>
+    <strong>Price</strong>
+    <strong>Qty</strong>
+    <strong>Total</strong>
+    <strong>Action</strong>
+  </div>
+
+  <div id="items"></div>
+
+  <button class="add-btn" onclick="addItem()">+ Add Item</button>
+
+  <div class="total">
+    Grand Total: ₱<span id="grandTotal">0.00</span>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
