@@ -231,3 +231,46 @@ button {
     font-size: 18px;
     padding: 14px;
   }
+
+  @media (max-width: 600px) {
+
+  /* Keep container compact */
+  .container {
+    padding: 15px;
+  }
+
+  /* Header row */
+  .header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto; /* same as desktop */
+    gap: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+
+  /* Items row */
+  .item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 5px;
+    align-items: center;
+    margin-bottom: 5px;
+    padding: 6px 4px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background: #fff;
+    font-size: 14px; /* keep it small */
+  }
+
+  .item input {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  .remove-btn {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+}
