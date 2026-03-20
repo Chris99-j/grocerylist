@@ -40,6 +40,7 @@ function addItem(data = {}) {
   const div = document.createElement("div");
   div.className = "item";
 
+  // Calculate total for this item
   let total = 0;
   if (data.price && data.qty) total = parseFloat(data.price) * parseFloat(data.qty);
   else if (data.total) total = parseFloat(data.total);
@@ -48,12 +49,12 @@ function addItem(data = {}) {
     <input type="text" placeholder="Item name" value="${data.name || ''}" ${data.name ? "readonly" : ""}>
     <input type="number" placeholder="Price" value="${data.price || ''}" ${data.price ? "readonly" : ""} oninput="calculateItem(this)">
     <input type="number" placeholder="Qty" value="${data.qty || ''}" ${data.qty ? "readonly" : ""} oninput="calculateItem(this)">
-    <input type="text" placeholder="Total" value="${total.toFixed(2)}" readonly>
+    <input type="text" class="item-total" placeholder="Total" value="${total.toFixed(2)}" readonly>
     <button class="remove-btn" onclick="removeItem(this)">X</button>
   `;
 
   itemsDiv.appendChild(div);
-}
+}   
 
 // 🔹 Remove item
 function removeItem(button) {
@@ -94,12 +95,20 @@ function saveToLocalStorage() {
   const data = [];
 
   rows.forEach(row => {
-    const name = row.querySelector('input[placeholder="Item name"]').value;
-    const price = parseFloat(row.querySelector('input[placeholder="Price"]').value) || 0;
-    const qty = parseFloat(row.querySelector('input[placeholder="Qty"]').value) || 0;
-    const total = parseFloat(row.querySelector('input[readonly]').value) || 0;
+    const nameInput = row.querySelector('.item-name');
+    const priceInput = row.querySelector('.item-price');
+    const qtyInput = row.querySelector('.item-qty');
+    const totalInput = row.querySelector('.item-total');
 
-    data.push({ name, price, qty, total });
+    // Only save if all elements exist
+    if (nameInput && priceInput && qtyInput && totalInput) {
+      const name = nameInput.value;
+      const price = parseFloat(priceInput.value) || 0;
+      const qty = parseFloat(qtyInput.value) || 0;
+      const total = parseFloat(totalInput.value) || 0;
+
+      data.push({ name, price, qty, total });
+    }
   });
 
   localStorage.setItem("groceryItems", JSON.stringify(data));
