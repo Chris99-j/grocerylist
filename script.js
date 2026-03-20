@@ -1,26 +1,54 @@
 const itemsDiv = document.getElementById("items");
 
-// 🔹 Load saved data on page load
+// Get inputs for live total calculation
+const newItemPrice = document.getElementById("newItemPrice");
+const newItemQty = document.getElementById("newItemQty");
+const totalInput = document.getElementById("totalInput");
+
+// 🔹 Update totalInput live
+function updateTotalInput() {
+  const price = parseFloat(newItemPrice.value) || 0;
+  const qty = parseFloat(newItemQty.value) || 0;
+  const total = Math.round(price * qty * 100) / 100;
+  totalInput.value = total.toFixed(2);
+}
+
+// Event listeners for live total
+newItemPrice.addEventListener("input", updateTotalInput);
+newItemQty.addEventListener("input", updateTotalInput);
+
+// 🔹 Load saved data and warn on reload
 window.onload = function () {
   const savedData = localStorage.getItem("groceryItems");
 
   if (savedData) {
-    const items = JSON.parse(savedData);
-    items.forEach(item => addItem(item));
-    calculateGrandTotal();
+    const confirmClear = confirm(
+      "Your data will be lost if you reload. Do you want to continue?"
+    );
+    if (confirmClear) {
+      localStorage.removeItem("groceryItems");
+    } else {
+      const items = JSON.parse(savedData);
+      items.forEach(item => addItem(item));
+      calculateGrandTotal();
+    }
   }
 };
 
-// 🔹 Add item (with optional data)
+// 🔹 Add item (editable or from saved data)
 function addItem(data = {}) {
   const div = document.createElement("div");
   div.className = "item";
 
+  let total = 0;
+  if (data.price && data.qty) total = parseFloat(data.price) * parseFloat(data.qty);
+  else if (data.total) total = parseFloat(data.total);
+
   div.innerHTML = `
-    <input type="text" placeholder="Item name" value="${data.name || ''}">
-    <input type="number" placeholder="Price" value="${data.price || ''}" oninput="calculateItem(this)">
-    <input type="number" placeholder="Qty" value="${data.qty || ''}" oninput="calculateItem(this)">
-    <input type="text" placeholder="Total" value="${data.total || ''}" readonly>
+    <input type="text" placeholder="Item name" value="${data.name || ''}" ${data.name ? "readonly" : ""}>
+    <input type="number" placeholder="Price" value="${data.price || ''}" ${data.price ? "readonly" : ""} oninput="calculateItem(this)">
+    <input type="number" placeholder="Qty" value="${data.qty || ''}" ${data.qty ? "readonly" : ""} oninput="calculateItem(this)">
+    <input type="text" placeholder="Total" value="${total.toFixed(2)}" readonly>
     <button class="remove-btn" onclick="removeItem(this)">X</button>
   `;
 
@@ -37,16 +65,10 @@ function removeItem(button) {
 // 🔹 Calculate per item
 function calculateItem(input) {
   const row = input.parentElement;
-
-  const priceInput = row.querySelector('input[placeholder="Price"]');
-  const qtyInput = row.querySelector('input[placeholder="Qty"]');
-  const totalInput = row.querySelector('input[readonly]');
-
-  if (!priceInput || !qtyInput || !totalInput) return;
-
-  const price = parseFloat(priceInput.value) || 0;
-  const qty = parseFloat(qtyInput.value) || 0;
-  totalInput.value = (price * qty).toFixed(2);
+  const price = parseFloat(row.querySelector('input[placeholder="Price"]').value) || 0;
+  const qty = parseFloat(row.querySelector('input[placeholder="Qty"]').value) || 0;
+  const totalInputField = row.querySelector('input[readonly]');
+  totalInputField.value = (Math.round(price * qty * 100) / 100).toFixed(2);
 
   calculateGrandTotal();
   saveToLocalStorage();
@@ -54,13 +76,15 @@ function calculateItem(input) {
 
 // 🔹 Calculate grand total
 function calculateGrandTotal() {
-  const totals = document.querySelectorAll(".item input[readonly]");
-  let grandTotal = 0;
+  const totals = document.querySelectorAll("#items .item input[disabled]");
+  let grandTotalCents = 0;
 
   totals.forEach(input => {
-    grandTotal += parseFloat(input.value) || 0;
+    const total = parseFloat(input.value) || 0;
+    grandTotalCents += Math.round(total * 100);
   });
 
+  const grandTotal = grandTotalCents / 100;
   document.getElementById("grandTotal").innerText = grandTotal.toFixed(2);
 }
 
@@ -70,45 +94,77 @@ function saveToLocalStorage() {
   const data = [];
 
   rows.forEach(row => {
-    const nameInput = row.querySelector('input[placeholder="Item name"]');
-    const priceInput = row.querySelector('input[placeholder="Price"]');
-    const qtyInput = row.querySelector('input[placeholder="Qty"]');
-    const totalInput = row.querySelector('input[readonly]');
+    const name = row.querySelector('input[placeholder="Item name"]').value;
+    const price = parseFloat(row.querySelector('input[placeholder="Price"]').value) || 0;
+    const qty = parseFloat(row.querySelector('input[placeholder="Qty"]').value) || 0;
+    const total = parseFloat(row.querySelector('input[readonly]').value) || 0;
 
-    // safety check: skip row if any input missing
-    if (!nameInput || !priceInput || !qtyInput || !totalInput) return;
-
-    data.push({
-      name: nameInput.value,
-      price: priceInput.value,
-      qty: qtyInput.value,
-      total: totalInput.value
-    });
+    data.push({ name, price, qty, total });
   });
 
   localStorage.setItem("groceryItems", JSON.stringify(data));
 }
 
-// 🔹 Warn before refresh/close
-window.onload = function () {
-  const savedData = localStorage.getItem("groceryItems");
-
-  if (savedData) {
-    const confirmClear = confirm("Your data will be lost if you reload. Do you want to continue?");
-    if (confirmClear) {
-      localStorage.removeItem("groceryItems"); // clear if user confirms
-    } else {
-      const items = JSON.parse(savedData); // keep saved data
-      items.forEach(item => addItem(item));
-      calculateGrandTotal();
-    }
-  }
-};
-
+// 🔹 Calculate change
 function calculateChange() {
   const grandTotal = parseFloat(document.getElementById("grandTotal").innerText) || 0;
   const amountGiven = parseFloat(document.getElementById("amountGiven").value) || 0;
+  const changeField = document.getElementById("change");
+  const message = document.getElementById("paymentMessage");
+  const change = Math.round((amountGiven - grandTotal) * 100) / 100;
 
-  const change = amountGiven - grandTotal;
-  document.getElementById("change").value = change >= 0 ? change.toFixed(2) : "0.00";
+  if (amountGiven === 0) {
+    changeField.value = "0.00";
+    message.innerText = "";
+  } else if (change < 0) {
+    changeField.value = "0.00";
+    message.innerText = "Insufficient amount!";
+    message.style.color = "red";
+  } else if (change === 0) {
+    changeField.value = "0.00";
+    message.innerText = "Exact amount, no change.";
+    message.style.color = "green";
+  } else {
+    changeField.value = change.toFixed(2);
+    message.innerText = `Change to return: ${change.toFixed(2)}`;
+    message.style.color = "blue";
+  }
+}
+
+// 🔹 Add item from input fields
+function addItemFromFields() {
+  const name = document.getElementById("newItemName").value.trim();
+  const price = parseFloat(document.getElementById("newItemPrice").value) || 0;
+  const qty = parseFloat(document.getElementById("newItemQty").value) || 0;
+  const totalInput = document.getElementById("totalInput"); // live total
+
+  if (!name) {
+    alert("Please enter item name");
+    return;
+  }
+
+  const total = parseFloat(totalInput.value) || 0; // get total from input
+
+  // Create the item row
+  const div = document.createElement("div");
+  div.className = "item";
+
+  div.innerHTML = `
+    <input type="text" placeholder="Item name" value="${name}" readonly>
+    <input type="number" placeholder="Price" value="${price}" readonly>
+    <input type="number" placeholder="Qty" value="${qty}" readonly>
+    <input type="text" placeholder="Total" value="${total.toFixed(2)}" disabled>
+    <button class="remove-btn" onclick="removeItem(this)">X</button>
+  `;
+
+  itemsDiv.appendChild(div);
+
+  // Clear input fields
+  document.getElementById("newItemName").value = "";
+  document.getElementById("newItemPrice").value = "";
+  document.getElementById("newItemQty").value = "";
+  totalInput.value = "";
+
+  calculateGrandTotal();
+  saveToLocalStorage();
 }

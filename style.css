@@ -23,7 +23,40 @@ h2 {
   margin-bottom: 15px;
 }
 
-/* TABLE STYLE */
+/* Add Item Fields */
+.add-item-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+.add-item-section input {
+  flex: 1 1 20%;
+  font-size: 16px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.add-item-section #newItemTotal {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.add-item-section .add-btn {
+  flex: 1 1 100%;
+  font-size: 18px;
+  padding: 14px;
+  background: green;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+}
+
+/* Item Listing */
 .item {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr auto;
@@ -37,7 +70,7 @@ h2 {
   font-size: 14px;
 }
 
-/* INPUTS */
+/* Inputs */
 input {
   padding: 10px;
   width: 100%;
@@ -46,7 +79,7 @@ input {
   border-radius: 6px;
 }
 
-/* BUTTONS */
+/* Buttons */
 button {
   padding: 10px;
   font-size: 14px;
@@ -67,7 +100,7 @@ button {
   color: white;
 }
 
-/* TOTAL */
+/* Total */
 .total {
   margin-top: 20px;
   font-size: 20px;
@@ -75,67 +108,7 @@ button {
   font-weight: bold;
 }
 
-/* 📱 MOBILE RESPONSIVE (BIG UI) */
-@media (max-width: 600px) {
-
-  body {
-    padding: 5px;
-  }
-
-  .container {
-    padding: 20px;
-    border-radius: 0;
-  }
-
-  h2 {
-    font-size: 26px;
-  }
-
-  .item {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    border: 1px solid #ddd;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-  }
-
-  .header {
-    display: none;
-  }
-
-  /* BIG INPUTS */
-  input {
-    font-size: 18px;
-    padding: 14px;
-  }
-
-  /* BIG BUTTONS */
-  button {
-    font-size: 18px;
-    padding: 14px;
-  }
-
-  .remove-btn {
-    width: 100%;
-  }
-
-  .add-btn {
-    font-size: 18px;
-    padding: 16px;
-  }
-
-  /* 🔥 STICKY TOTAL */
-  .total {
-    position: sticky;
-    bottom: 0;
-    background: white;
-    padding: 15px;
-    border-top: 2px solid #ddd;
-    font-size: 24px;
-  }
-}
-
+/* Payment Section */
 .payment {
   margin-top: 20px;
   display: grid;
@@ -156,8 +129,66 @@ button {
   width: 100%;
 }
 
-/* Mobile layout */
+/* ---------------- Mobile Responsive ---------------- */
 @media (max-width: 600px) {
+
+  body {
+    padding: 5px;
+  }
+
+  .container {
+    padding: 20px;
+    border-radius: 0;
+  }
+
+  h2 {
+    font-size: 26px;
+  }
+
+  /* Items become cards */
+  .item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid #ddd;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    background: #fff;
+  }
+
+  .header {
+    display: none;
+  }
+
+  .item input {
+    font-size: 18px;
+    padding: 12px;
+  }
+
+  .remove-btn {
+    font-size: 18px;
+    padding: 12px;
+    width: 100%;
+  }
+
+  .add-btn {
+    font-size: 18px;
+    padding: 16px;
+  }
+
+  /* Sticky Grand Total */
+  .total {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding: 15px;
+    border-top: 2px solid #ddd;
+    font-size: 24px;
+    text-align: center;
+  }
+
+  /* Payment stacked vertically */
   .payment {
     grid-template-columns: 1fr;
   }
@@ -166,9 +197,13 @@ button {
     font-size: 18px;
     padding: 14px;
   }
+
+  .add-item-section input {
+    flex: 1 1 100%;
+  }
 }
 
-/* 📱 TABLET */
+/* Tablet layout */
 @media (min-width: 601px) and (max-width: 900px) {
   .container {
     padding: 25px;
@@ -186,4 +221,13 @@ button {
     font-size: 16px;
   }
 }
+ .add-item-section {
+    flex-direction: column;
+  }
 
+  .add-item-section input,
+  .add-item-section .add-btn {
+    flex: 1 1 100%;
+    font-size: 18px;
+    padding: 14px;
+  }

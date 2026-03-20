@@ -11,7 +11,16 @@
 <div class="container">
   <h2>🛒 Grocery Calculator</h2>
 
-  <!-- Header -->
+  <!-- Add Item Section -->
+  <div class="add-item-section">
+    <input type="text" id="newItemName" placeholder="Item Name">
+    <input type="number" id="newItemPrice" placeholder="Price">
+    <input type="number" id="newItemQty" placeholder="Qty">
+    <input type="text" id="totalInput" placeholder="Total" disabled>
+    <button class="add-btn" onclick="addItemFromFields()">Add Item</button>
+  </div>
+
+  <!-- Items Listing Header -->
   <div class="item header">
     <strong>Item</strong>
     <strong>Price</strong>
@@ -20,23 +29,24 @@
     <strong>Action</strong>
   </div>
 
+  <!-- Items Listing -->
   <div id="items"></div>
 
-  <button class="add-btn" onclick="addItem()">+ Add Item</button>
-
+  <!-- Grand Total -->
   <div class="total">
     Grand Total: ₱<span id="grandTotal">0.00</span>
   </div>
 
-  <!-- Payment Section inside container -->
+  <!-- Payment Section -->
   <div class="payment">
-    <label for="amountGiven">Amount Given to Cashier:</label>
+    <label for="amountGiven">Amount Given:</label>
     <input type="number" id="amountGiven" placeholder="Enter amount" oninput="calculateChange()">
 
-    <label for="change">Change You Will Receive:</label>
+    <label for="change">Change:</label>
     <input type="text" id="change" placeholder="0.00" readonly>
 
-    <p id="paymentMessage"></p>
+    <!-- Status message -->
+    <p id="paymentMessage" style="grid-column: 1 / -1; font-weight:bold; margin-top:5px;"></p>
   </div>
 </div>
 
