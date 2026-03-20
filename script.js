@@ -37,12 +37,16 @@ function removeItem(button) {
 // 🔹 Calculate per item
 function calculateItem(input) {
   const row = input.parentElement;
-  const price = row.children[1].value;
-  const qty = row.children[2].value;
-  const totalField = row.children[3];
 
-  const total = (parseFloat(price) || 0) * (parseFloat(qty) || 0);
-  totalField.value = total.toFixed(2);
+  const priceInput = row.querySelector('input[placeholder="Price"]');
+  const qtyInput = row.querySelector('input[placeholder="Qty"]');
+  const totalInput = row.querySelector('input[readonly]');
+
+  if (!priceInput || !qtyInput || !totalInput) return;
+
+  const price = parseFloat(priceInput.value) || 0;
+  const qty = parseFloat(qtyInput.value) || 0;
+  totalInput.value = (price * qty).toFixed(2);
 
   calculateGrandTotal();
   saveToLocalStorage();
@@ -66,12 +70,19 @@ function saveToLocalStorage() {
   const data = [];
 
   rows.forEach(row => {
-    const inputs = row.querySelectorAll("input");
+    const nameInput = row.querySelector('input[placeholder="Item name"]');
+    const priceInput = row.querySelector('input[placeholder="Price"]');
+    const qtyInput = row.querySelector('input[placeholder="Qty"]');
+    const totalInput = row.querySelector('input[readonly]');
+
+    // safety check: skip row if any input missing
+    if (!nameInput || !priceInput || !qtyInput || !totalInput) return;
+
     data.push({
-      name: inputs[0].value,
-      price: inputs[1].value,
-      qty: inputs[2].value,
-      total: inputs[3].value
+      name: nameInput.value,
+      price: priceInput.value,
+      qty: qtyInput.value,
+      total: totalInput.value
     });
   });
 
@@ -79,9 +90,18 @@ function saveToLocalStorage() {
 }
 
 // 🔹 Warn before refresh/close
-window.addEventListener("beforeunload", function (e) {
-  if (document.querySelectorAll(".item").length > 0) {
-    e.preventDefault();
-    e.returnValue = "";
+window.onload = function () {
+  const savedData = localStorage.getItem("groceryItems");
+
+  if (savedData) {
+    const confirmClear = confirm("Your data will be lost if you reload. Do you want to continue?");
+    if (confirmClear) {
+      localStorage.removeItem("groceryItems"); // clear if user confirms
+    } else {
+      const items = JSON.parse(savedData); // keep saved data
+      items.forEach(item => addItem(item));
+      calculateGrandTotal();
+    }
   }
-});
+};
+
